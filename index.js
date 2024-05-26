@@ -78,6 +78,23 @@ async function run() {
         res.status(500).send(err);
       }
     });
+
+    // Save a room data in db
+    app.post("/room", async (req, res) => {
+      const roomData = req.body;
+      const result = await roomsCollection.insertOne(roomData);
+      res.send(result);
+    });
+
+    // get all rooms for host
+    app.get('/my-listings/:email', async (req, res) => {
+      const email = req.params.email
+
+      let query = { 'host.email': email }
+      const result = await roomsCollection.find(query).toArray()
+      res.send(result)
+    })
+
     // get all rooms data
     app.get("/rooms", async (req, res) => {
       const category = req.query.category;
